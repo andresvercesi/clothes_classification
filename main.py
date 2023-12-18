@@ -14,7 +14,7 @@ from fastapi import FastAPI
 
 
 
-subCategory_model = tf.keras.models.load_model('models\modelo_entrenado.h5')
+subCategory_model = tf.keras.models.load_model('\models\modelo_entrenado.h5')
 #subCategory_model.summary()
 
 label_mapping = {0: 'Accessories', 1: 'Apparel Set', 2: 'Bags', 3: 'Beauty Accessories',
