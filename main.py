@@ -21,6 +21,7 @@ def open_preprocess_url_image(url):
     new_size = (224, 224)
     img = img.resize(new_size)
     transformed_image_array = img_to_array(img)
+    del img
     transformed_image_array = preprocess_input(transformed_image_array)
     transformed_image_array = np.expand_dims(transformed_image_array, axis=0)
     return (transformed_image_array)
@@ -63,26 +64,44 @@ app = FastAPI()
 async def root():
     return {"message": "Hello"}
 
-@app.get("/clothes")
+@app.get("/subcategory")
 async def clothes(url: str):
     results = {}
     
     img = open_preprocess_url_image(url)
 
     subCategory_inference = subCategory_model.predict(img)
+    
+    subCategory_prob = subCategory_inference[0]
+    
+    subcategory_predicted = (np.argmax(subCategory_inference, axis=1))[0]
+
+    print(subCategory_prob[subcategory_predicted])
+
+    results['subCategory'] = label_mapping_subcategory[subcategory_predicted]
+    
+    return (results)
+
+@app.get("/articleType")
+async def clothes(url: str):
+    results = {}
+    
+    img = open_preprocess_url_image(url)
+
+    #subCategory_inference = subCategory_model.predict(img)
 
     articleType_inference = articleType_model.predict(img)
     
-    subCategory_prob = subCategory_inference[0]
+    #subCategory_prob = subCategory_inference[0]
     articleType_prob = articleType_inference[0]
     
-    subcategory_predicted = (np.argmax(subCategory_inference, axis=1))[0]
+    #subcategory_predicted = (np.argmax(subCategory_inference, axis=1))[0]
     articleType_predicted = (np.argmax(articleType_inference, axis=1))[0]
 
-    print(subCategory_prob[subcategory_predicted])
+    #print(subCategory_prob[subcategory_predicted])
     print(articleType_prob[articleType_predicted])
 
-    results['subCategory'] = label_mapping_subcategory[subcategory_predicted]
+    #results['subCategory'] = label_mapping_subcategory[subcategory_predicted]
     results['articleType'] = label_mapping_articleType[articleType_predicted]
     
     return (results)
