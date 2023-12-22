@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+
+  fastapi:
+    image: image-fastapi
+    build: .
+    container_name: fastapi-rnn-clothes-app
+    ports:
+      - '8000:8000'
