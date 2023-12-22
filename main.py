@@ -17,7 +17,8 @@ def open_preprocess_url_image(url):
     #url = 'https://'+url
     #response = requests.get(url)
     #img = Image.open(BytesIO(response.content))
-    img = Image.open(requests.get(url, stream=True).raw)
+    request_image = requests.get(url, stream=True)
+    img = Image.open(BytesIO(request_image.content))
     new_size = (224, 224)
     img = img.resize(new_size)
     transformed_image_array = img_to_array(img)
@@ -28,7 +29,9 @@ def open_preprocess_url_image(url):
 
 
 subCategory_model = tf.keras.models.load_model('subCategoryV1.h5')
+subCategory_model.trainable = False
 articleType_model = tf.keras.models.load_model('articleType_V1.h5')
+articleType_model.trainable = False
 
 #subCategory_model.summary()
 
